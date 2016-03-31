@@ -78,6 +78,11 @@ class sssd (
   $service_ensure          = $sssd::params::service_ensure,
   $enable_mkhomedir_flags  = $sssd::params::enable_mkhomedir_flags,
   $disable_mkhomedir_flags = $sssd::params::disable_mkhomedir_flags,
+  $domain                  = $sssd::params::domain,
+  $domain_site             = $sssd::params::domain_site,
+  $domain_join_user        = $sssd::params::domain_join_user,
+  $domain_join_password    = $sssd::params::domain_join_password,
+
 ) inherits sssd::params {
 
   validate_re($ensure, '^(present|absent)$',
@@ -87,7 +92,10 @@ class sssd (
   validate_string(
     $sssd_package,
     $sssd_service,
-    $config_template
+    $config_template,
+    $domain_site,
+    $domain_join_user,
+    $domain_join_password
   )
 
   validate_array(
@@ -114,6 +122,7 @@ class sssd (
   class { '::sssd::install': } ->
   class { '::sssd::config': } ~>
   class { '::sssd::service': } ->
+  class { '::sssd::join': } ->
   anchor { 'sssd::end': }
 
 }
